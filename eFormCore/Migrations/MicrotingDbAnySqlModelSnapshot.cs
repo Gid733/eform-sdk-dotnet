@@ -16,7 +16,7 @@ namespace Microting.eForm.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.0")
+                .HasAnnotation("ProductVersion", "7.0.5")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("Microting.eForm.Infrastructure.Data.Entities.Answer", b =>
@@ -3735,6 +3735,9 @@ namespace Microting.eForm.Migrations
                     b.Property<short?>("Local")
                         .HasColumnType("smallint");
 
+                    b.Property<string>("OriginalFileLocation")
+                        .HasColumnType("longtext");
+
                     b.Property<int?>("TranscriptionId")
                         .HasColumnType("int");
 
@@ -3795,6 +3798,9 @@ namespace Microting.eForm.Migrations
                     b.Property<short?>("Local")
                         .HasColumnType("smallint");
 
+                    b.Property<string>("OriginalFileLocation")
+                        .HasColumnType("longtext");
+
                     b.Property<int?>("TranscriptionId")
                         .HasColumnType("int");
 
@@ -3840,6 +3846,10 @@ namespace Microting.eForm.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("varchar(255)");
 
+                    b.Property<string>("Initials")
+                        .HasMaxLength(3)
+                        .HasColumnType("varchar(3)");
+
                     b.Property<bool>("IsLocked")
                         .HasColumnType("tinyint(1)");
 
@@ -3881,6 +3891,10 @@ namespace Microting.eForm.Migrations
                     b.Property<string>("FirstName")
                         .HasMaxLength(255)
                         .HasColumnType("varchar(255)");
+
+                    b.Property<string>("Initials")
+                        .HasMaxLength(3)
+                        .HasColumnType("varchar(3)");
 
                     b.Property<bool>("IsLocked")
                         .HasColumnType("tinyint(1)");

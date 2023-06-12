@@ -35,6 +35,7 @@ using Microting.eForm.Infrastructure.Constants;
 using Microting.eForm.Infrastructure.Data.Entities;
 using Microting.eForm.Messages;
 using Newtonsoft.Json.Linq;
+using RabbitMQ.Client.Exceptions;
 using Rebus.Bus;
 
 namespace Microting.eForm.Services
@@ -114,6 +115,7 @@ namespace Microting.eForm.Services
         {
             return _isActive;
         }
+
         private void SubscriberThread()
         {
             var token = _sqlController.SettingRead(Settings.token).GetAwaiter().GetResult();
@@ -124,7 +126,8 @@ namespace Microting.eForm.Services
 
                 string awsAccessKeyId = _sqlController.SettingRead(Settings.awsAccessKeyId).Result;
                 string awsSecretAccessKey = _sqlController.SettingRead(Settings.awsSecretAccessKey).Result;
-                string awsQueueUrl = _sqlController.SettingRead(Settings.awsEndPoint).Result + _sqlController.SettingRead(Settings.token).Result;
+                string awsQueueUrl = _sqlController.SettingRead(Settings.awsEndPoint).Result +
+                                     _sqlController.SettingRead(Settings.token).Result;
 
                 var sqsClient = new AmazonSQSClient(awsAccessKeyId, awsSecretAccessKey, RegionEndpoint.EUCentral1);
                 DateTime lastException = DateTime.MinValue;
@@ -133,7 +136,8 @@ namespace Microting.eForm.Services
                 {
                     try
                     {
-                        var res = sqsClient.ReceiveMessageAsync(awsQueueUrl, _cancellationToken).GetAwaiter().GetResult();
+                        var res = sqsClient.ReceiveMessageAsync(awsQueueUrl, _cancellationToken).GetAwaiter()
+                            .GetResult();
 
                         if (res.Messages.Count > 0)
                             foreach (var message in res.Messages)
@@ -150,62 +154,73 @@ namespace Microting.eForm.Services
                                 {
                                     case Constants.Notifications.Completed:
                                         _sqlController.NotificationCreate(notificationUId, microtingUId,
-                                                Constants.Notifications.Completed).GetAwaiter().GetResult();
-                                            _bus.SendLocal(new EformCompleted(notificationUId, microtingUId));
+                                            Constants.Notifications.Completed).GetAwaiter().GetResult();
+                                        _bus.SendLocal(new EformCompleted(notificationUId, microtingUId)).GetAwaiter()
+                                            .GetResult();
                                         break;
                                     case Constants.Notifications.EformParsedByServer:
-                                        _bus.SendLocal(new EformParsedByServer(notificationUId, microtingUId));
+                                        _bus.SendLocal(new EformParsedByServer(notificationUId, microtingUId))
+                                            .GetAwaiter().GetResult();
                                         break;
                                     case Constants.Notifications.EformParsingError:
-                                        _bus.SendLocal(new EformParsingError(notificationUId, microtingUId));
+                                        _bus.SendLocal(new EformParsingError(notificationUId, microtingUId))
+                                            .GetAwaiter().GetResult();
                                         break;
                                     case Constants.Notifications.RetrievedForm:
                                         _sqlController.NotificationCreate(notificationUId, microtingUId,
                                             Constants.Notifications.RetrievedForm).GetAwaiter().GetResult();
-                                        _bus.SendLocal(new EformRetrieved(notificationUId, microtingUId));
+                                        _bus.SendLocal(new EformRetrieved(notificationUId, microtingUId)).GetAwaiter()
+                                            .GetResult();
                                         break;
                                     case Constants.Notifications.UnitActivate:
                                         _sqlController.NotificationCreate(notificationUId, microtingUId,
                                             Constants.Notifications.UnitActivate).GetAwaiter().GetResult();
-                                        _bus.SendLocal(new UnitActivated(notificationUId, microtingUId));
+                                        _bus.SendLocal(new UnitActivated(notificationUId, microtingUId)).GetAwaiter()
+                                            .GetResult();
                                         break;
                                     case Constants.Notifications.SpeechToTextCompleted:
                                         _sqlController.NotificationCreate(notificationUId, microtingUId,
                                             Constants.Notifications.SpeechToTextCompleted).GetAwaiter().GetResult();
-                                        _bus.SendLocal(new TranscriptionCompleted(notificationUId, microtingUId));
+                                        _bus.SendLocal(new TranscriptionCompleted(notificationUId, microtingUId))
+                                            .GetAwaiter().GetResult();
                                         break;
                                     case Constants.Notifications.InSightAnswerDone:
                                         _sqlController.NotificationCreate(notificationUId, microtingUId,
                                             Constants.Notifications.InSightAnswerDone).GetAwaiter().GetResult();
-                                        _bus.SendLocal(new AnswerCompleted(notificationUId, microtingUId));
+                                        _bus.SendLocal(new AnswerCompleted(notificationUId, microtingUId)).GetAwaiter()
+                                            .GetResult();
                                         break;
                                     case Constants.Notifications.InSightSurveyConfigurationChanged:
                                     case Constants.Notifications.InSightSurveyConfigurationCreated:
                                         _sqlController.NotificationCreate(notificationUId, microtingUId,
-                                            Constants.Notifications.InSightSurveyConfigurationChanged).GetAwaiter().GetResult();
-                                        _bus.SendLocal(new SurveyConfigurationChanged(notificationUId, microtingUId));
+                                                Constants.Notifications.InSightSurveyConfigurationChanged).GetAwaiter()
+                                            .GetResult();
+                                        _bus.SendLocal(new SurveyConfigurationChanged(notificationUId, microtingUId))
+                                            .GetAwaiter().GetResult();
                                         break;
                                 }
 
-                                sqsClient.DeleteMessageAsync(awsQueueUrl, message.ReceiptHandle, _cancellationToken).GetAwaiter().GetResult();
+                                sqsClient.DeleteMessageAsync(awsQueueUrl, message.ReceiptHandle, _cancellationToken)
+                                    .GetAwaiter().GetResult();
                             }
                         else
                         {
                             _log.LogStandard(_t.GetMethodName("Subscriber"),
                                 $"{DateTime.UtcNow.ToString(CultureInfo.InvariantCulture)} -  No messages for us right now!");
                         }
-
                     }
                     catch (WebException webException)
                     {
-                        _log.LogWarning(_t.GetMethodName("Subscriber"), _t.PrintException(_t.GetMethodName("Subscriber") + " failed", webException));
+                        _log.LogWarning(_t.GetMethodName("Subscriber"),
+                            _t.PrintException(_t.GetMethodName("Subscriber") + " failed", webException));
                         // We try to sleep 20 seconds to see if the problem goes away by it self.
                         Thread.Sleep(20000);
                     }
 
                     catch (Exception ex)
                     {
-                        _log.LogWarning(_t.GetMethodName("Subscriber"), _t.PrintException(_t.GetMethodName("Subscriber") + " failed", ex));
+                        _log.LogWarning(_t.GetMethodName("Subscriber"),
+                            _t.PrintException(_t.GetMethodName("Subscriber") + " failed", ex));
 
                         if (DateTime.Compare(lastException.AddMinutes(5), DateTime.UtcNow) > 0)
                         {
@@ -217,13 +232,14 @@ namespace Microting.eForm.Services
                         lastException = DateTime.UtcNow;
                     }
                 }
+
                 _log.LogStandard(_t.GetMethodName("Subscriber"), "--- WE WHERE TOLD NOT TO CONTINUE TO SUBSCRIBE ---");
                 sqsClient.Dispose();
                 _isActive = false;
             }
             // end
             else
-            // start unit test
+                // start unit test
             {
                 _log.LogStandard(_t.GetMethodName("Subscriber"), "Subscriber faked");
                 _isActive = true;

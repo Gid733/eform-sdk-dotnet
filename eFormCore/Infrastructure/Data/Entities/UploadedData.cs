@@ -27,32 +27,28 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Microting.eForm.Infrastructure.Data.Entities
 {
-    public  class UploadedData : PnBase
+    public class UploadedData : PnBase
     {
         public int? UploaderId { get; set; }
 
-        [StringLength(255)]
-        public string Checksum { get; set; }
+        [StringLength(255)] public string Checksum { get; set; }
 
-        [StringLength(255)]
-        public string Extension { get; set; }
+        [StringLength(255)] public string Extension { get; set; }
 
-        [StringLength(255)]
-        public string CurrentFile { get; set; }
+        [StringLength(255)] public string CurrentFile { get; set; }
 
-        [StringLength(255)]
-        public string UploaderType { get; set; }
+        [StringLength(255)] public string UploaderType { get; set; }
 
-        [StringLength(255)]
-        public string FileLocation { get; set; }
+        [StringLength(255)] public string FileLocation { get; set; }
 
-        [StringLength(255)]
-        public string FileName { get; set; }
+        [StringLength(255)] public string FileName { get; set; }
 
         public DateTime? ExpirationDate { get; set; }
 
         public short? Local { get; set; }
 
         public int? TranscriptionId { get; set; }
+
+        public string OriginalFileLocation { get; set; }
     }
 }

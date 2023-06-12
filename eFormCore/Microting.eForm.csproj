@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <TargetFramework>net7.0</TargetFramework>
@@ -262,6 +262,10 @@
         <Compile Include="Migrations\20221016081344_AddingIsActiveToLanguage.Designer.cs" />
         <Compile Include="Migrations\20221129082337_AddingReceivedByServerAtToCases.cs" />
         <Compile Include="Migrations\20221129082337_AddingReceivedByServerAtToCases.Designer.cs" />
+        <Compile Include="Migrations\20230506062507_AddingInitialsToWorkers.cs" />
+        <Compile Include="Migrations\20230506062507_AddingInitialsToWorkers.Designer.cs" />
+        <Compile Include="Migrations\20230607084834_AddingOriginalFileLocationToUploadedData.cs" />
+        <Compile Include="Migrations\20230607084834_AddingOriginalFileLocationToUploadedData.Designer.cs" />
         <Compile Include="Migrations\MicrotingDbAnySqlModelSnapshot.cs" />
         <Compile Include="Infrastructure\SqlController.cs" />
         <Compile Include="Services\Subscriber.cs" />
@@ -269,28 +273,28 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="AWSSDK.Core" Version="3.7.102.4" />
-        <PackageReference Include="AWSSDK.S3" Version="3.7.101.36" />
-        <PackageReference Include="AWSSDK.SQS" Version="3.7.100.36" />
+        <PackageReference Include="AWSSDK.Core" Version="3.7.107.4" />
+        <PackageReference Include="AWSSDK.S3" Version="3.7.104.30" />
+        <PackageReference Include="AWSSDK.SQS" Version="3.7.103.1" />
         <PackageReference Include="Castle.Core" Version="5.1.0" />
-        <PackageReference Include="DocumentFormat.OpenXml" Version="2.19.0" />
-        <PackageReference Include="Magick.NET-Q16-x64" Version="12.2.1" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.1" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.1">
-          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-          <PrivateAssets>all</PrivateAssets>
+        <PackageReference Include="DocumentFormat.OpenXml" Version="2.20.0" />
+        <PackageReference Include="Magick.NET-Q16-AnyCPU" Version="13.1.3" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.5" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.5">
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+            <PrivateAssets>all</PrivateAssets>
         </PackageReference>
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="7.0.1" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="7.0.5" />
         <PackageReference Include="Microsoft.Extensions.Logging" Version="7.0.0" />
         <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="7.0.0" />
         <PackageReference Include="Microting.Castle.Windsor" Version="6.0.1" />
-        <PackageReference Include="Microting.Rebus" Version="7.3.10" />
-        <PackageReference Include="Microting.Rebus.Castle.Windsor" Version="7.2.10" />
-        <PackageReference Include="Microting.Rebus.RabbitMq" Version="8.2.10" />
-        <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
-        <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="7.0.0-silver.1" />
+        <PackageReference Include="Microting.Rebus" Version="7.3.11" />
+        <PackageReference Include="Microting.Rebus.Castle.Windsor" Version="7.2.11" />
+        <PackageReference Include="Microting.Rebus.RabbitMq" Version="8.2.11" />
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+        <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="7.0.0" />
         <PackageReference Include="Remotion.Linq" Version="2.2.0" />
-        <PackageReference Include="SharpZipLib" Version="1.4.1" />
+        <PackageReference Include="SharpZipLib" Version="1.4.2" />
         <PackageReference Include="System.CodeDom" Version="7.0.0" />
         <PackageReference Include="System.ComponentModel.EventBasedAsync" Version="4.3.0" />
         <PackageReference Include="System.Drawing.Common" Version="7.0.0" />
